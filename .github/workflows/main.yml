@@ -2,28 +2,26 @@ name: Pipeline Final
 on: push
 
 jobs:
-  build:
+  build: 
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.0.0
+        - name: Checkout
+          uses: actions/checkout@v4.0.0
+        - name: Set up JDK 11
+          uses: actions/setup-java@v3
+          with:
+              java-version: '11'
+              distribution: 'zulu'
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'zulu'
-
-      - name: Build with Gradle
-        run: |
-          chmod +x gradlew
-          ./gradlew clean :service-a:build
-
-    
-    - name: Deploy Kubernetes ## Despliegue en Kubernetes
-      run: |
-        kubectl apply -f $GITHUB_WORKSPACE/deploy/deployment.yaml
-  
-
-         
+        - name: Build with Gradle
+          run: |
+              chmod +x gradlew
+              ./gradlew clean :service-a:build
+      
+        - name: SonarCloud Pkg
+          uses: actions/cache@v3
+          with:
+            path: ~/.sonar/cache
+            key: ${{ runner.os }}-sonar
+            restore-keys: ${{ runner.os }}-sonar
