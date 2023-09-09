@@ -47,6 +47,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           ./gradlew test  # Ejecuta pruebas unitarias
+
+      - name: Check Gradle Version
+        run: ./gradlew --version
           
       - uses: actions/checkout@v3
           
