@@ -1,4 +1,5 @@
 name: SonarCloud
+
 on:
   push:
     branches:
@@ -15,11 +16,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 14  # Cambia esto a la versión de Node.js que desees usar
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3.12.0
@@ -58,6 +54,7 @@ jobs:
 
       - name: Install JMeter and Postman
         run: |
+          # Ensure the 'test_report' folder exists before running JMeter and Postman tests
           mkdir -p $GITHUB_WORKSPACE/test_report
           chmod +x $GITHUB_WORKSPACE/test_report
           java -version
@@ -89,10 +86,11 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: jmeter_test_results
-          path: test_report
+          path: $GITHUB_WORKSPACE/test_report
 
       - name: Upload Postman Test Results
         uses: actions/upload-artifact@v2
         with:
           name: postman-test-results
-          path: PostmanResults/
+          path: $GITHUB_WORKSPACE/PostmanResults/
+
