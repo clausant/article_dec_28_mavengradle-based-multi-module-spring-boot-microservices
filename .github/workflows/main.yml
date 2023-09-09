@@ -38,3 +38,8 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew clean build bootBuildImage sonar --info
+
+      - name: run jmeter on github action
+        # You may pin to the exact commit or the version.
+        # uses: sebiboga/run-jmeter-github-action@a492bfe3a62c8c15bf62e7c0cdd40c94d2e2f7e5
+        uses: sebiboga/run-jmeter-github-action@v0.0.5
