@@ -21,7 +21,7 @@ jobs:
             distribution: 'zulu' 
             
       - name: SonarCloud Scan
-        run: sonar-scanner -Dsonar.qualitygate.wait=true
+        run: sonarcloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Usa la variable de entorno del token de acceso
 
