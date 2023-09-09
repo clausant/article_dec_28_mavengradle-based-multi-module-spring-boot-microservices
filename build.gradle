@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'java'
     id "org.sonarqube" version "4.3.1.3277"
+    id 'jacoco'
 }
 
 sonar {
@@ -28,72 +29,54 @@ allprojects {
     sourceCompatibility = '11'
 }
 
-subprojects {
+dependencies {
+    implementation 'org.yaml:snakeyaml:1.27'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
 
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'java'
-    apply plugin: 'jacoco' // Agregamos el complemento JaCoCo aquí
+test {
+    useJUnitPlatform()
+}
 
-    repositories {
-        mavenCentral()
+jacoco {
+    toolVersion = "0.8.7"
+    reportsDir = file("$buildDir/reports/jacoco")
+}
+
+tasks.withType(Test) {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination file("$buildDir/reports/jacoco/html")
     }
 
-    test {
-        useJUnitPlatform()
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                exclude: [
+                        '**/*Application.class',
+                        '**/*Configuration.class',
+                        '**/*Test.class'
+                ])
+        }))
     }
+}
 
-    jacoco { // Configuración de JaCoCo
-        toolVersion = "0.8.7" // Versión de JaCoCo (ajusta según tu preferencia)
-        reportsDir = file("$buildDir/reports/jacoco")
-    }
+check.dependsOn jacocoTestCoverageVerification
 
-    tasks.withType(Test) {
-        finalizedBy jacocoTestReport
-    }
-
-    jacocoTestReport {
-        dependsOn test
-        reports {
-            xml.enabled true
-            csv.enabled false
-            html.destination file("$buildDir/reports/jacoco/html")
-        }
-
-        afterEvaluate {
-            classDirectories.setFrom(files(classDirectories.files.collect {
-                fileTree(dir: it,
-                        exclude: [
-                                '**/*Application.class', // Excluye las clases de aplicación Spring Boot
-                                '**/*Configuration.class', // Excluye las clases de configuración de Spring Boot
-                                '**/*Test.class' // Excluye las clases de prueba
-                        ])
-            }))
-        }
-    }
-
-    check.dependsOn jacocoTestCoverageVerification
-
-    jacocoTestCoverageVerification {
-        violationRules {
-            rule {
-                limit {
-                    minimum = 1 // Umbral del 85%
-                }
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 85
             }
-        }
-    }
-
-    dependencies {
-        implementation 'org.yaml:snakeyaml:1.27'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-        developmentOnly 'org.springframework.boot:spring-boot-devtools'
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    }
-
-    dependencyManagement {
-        imports {
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
         }
     }
 }
