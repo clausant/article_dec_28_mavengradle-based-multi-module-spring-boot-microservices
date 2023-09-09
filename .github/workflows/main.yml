@@ -1,5 +1,3 @@
-name: SonarCloud
-
 on:
   push:
     branches:
@@ -52,7 +50,6 @@ jobs:
       - name: Check Gradle Version
         run: ./gradlew --version
 
-   
        # Instalar Jmeter
       - name: instalacion jmeter
         run: |
@@ -64,6 +61,7 @@ jobs:
           cd apache-jmeter-5.5/bin
           ./jmeter -v
           pwd
+
       - name: instalar plugins
         run: |
           cd $GITHUB_WORKSPACE/apache-jmeter-5.5
@@ -79,21 +77,18 @@ jobs:
             ./jmeter -n -t $GITHUB_WORKSPACE/$i  -l $GITHUB_WORKSPACE/${i%.jmx}.jtl -e -o $GITHUB_WORKSPACE/test_report/${i%.jmx}
          done
       
-     # - name: mover jtl
-     #   run: |
-     #    ls
-     #     mv *.jtl $GITHUB_WORKSPACE/test_report
-          
-      # Dejar disponible resultados al finalizar
       - name: Upload JMeter Test Results
         uses: actions/upload-artifact@v2.2.4
         with:
          name: jmeter_test_results
          path: test_report
       
-     # - name: eliminar jtl
-     #  run: |
-     #     rm -rf $GITHUB_WORKSPACE/test_report
+      # Verificar si el archivo 'Postman.json' existe y, si no, crearlo
+      - name: Verificar y crear Postman.json
+        run: |
+          if [ ! -f "Postman.json" ]; then
+            echo '{"your_collection_data_here"}' > Postman.json
+          fi
 
       # Pruebas con Postman
       - name: Postman
@@ -107,3 +102,4 @@ jobs:
         with:
           name: postman-test-results
           path: newman/
+
