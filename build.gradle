@@ -78,7 +78,7 @@ subprojects {
         violationRules {
             rule {
                 limit {
-                    minimum = 0.99 // Umbral del 85%
+                    minimum = 1 // Umbral del 85%
                 }
             }
         }
