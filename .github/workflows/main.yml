@@ -1,27 +1,52 @@
 name: Pipeline Final
-on: push
+
+on:
+  push:
+    branches:
+      - main  # Cambia esto al nombre de tu rama principal si es diferente
 
 jobs:
-  build: 
+  sonarcloud-validation:
+    name: SonarCloud Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set Up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'  # Cambia la versión de Java según tus necesidades
+
+      - name: SonarCloud Scan
+        run: sonar-scanner -Dsonar.qualitygate.wait=true
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Usa la variable de entorno del token de acceso
+
+  build:
     name: Build
     runs-on: ubuntu-latest
-    steps:
-        - name: Checkout
-          uses: actions/checkout@v4.0.0
-        - name: Set up JDK 11
-          uses: actions/setup-java@v3
-          with:
-              java-version: '11'
-              distribution: 'zulu'
+    needs: sonarcloud-validation  # Espera a que se complete la validación de SonarCloud antes de la construcción
 
-        - name: Build with Gradle
-          run: |
-              chmod +x gradlew
-              ./gradlew clean :service-a:build
-      
-        - name: SonarCloud Pkg
-          uses: actions/cache@v3
-          with:
-            path: ~/.sonar/cache
-            key: ${{ runner.os }}-sonar
-            restore-keys: ${{ runner.os }}-sonar
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.0.0
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'zulu'
+
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew clean :service-a:build
+
+      - name: SonarCloud Pkg
+        uses: actions/cache@v3
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
