@@ -82,13 +82,6 @@ jobs:
         with:
          name: jmeter_test_results
          path: test_report
-      
-      # Verificar si el archivo 'Postman.json' existe y, si no, crearlo
-      - name: Verificar y crear Postman.json
-        run: |
-          if [ ! -f "Postman.json" ]; then
-            echo '{"your_collection_data_here"}' > Postman.json
-          fi
 
       # Pruebas con Postman
       - name: Postman
