@@ -83,6 +83,14 @@ jobs:
          name: jmeter_test_results
          path: test_report
 
+      # Verificar la existencia del archivo 'Postman.json'
+      - name: Verificar existencia de Postman.json
+        run: |
+          if [ ! -f "Postman.json" ]; then
+            echo "El archivo 'Postman.json' no se encontró en la raíz."
+            exit 1
+          fi
+
       # Pruebas con Postman
       - name: Postman
         uses: matt-ball/newman-action@master
@@ -95,4 +103,3 @@ jobs:
         with:
           name: postman-test-results
           path: newman/
-
