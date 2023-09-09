@@ -1,65 +1,107 @@
 plugins {
-	id 'org.springframework.boot' version '2.4.1'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-	id 'java'
-	id "org.sonarqube" version "4.3.1.3277"
+    id 'org.springframework.boot' version '2.4.1'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+    id "org.sonarqube" version "4.3.1.3277"
 }
 
 sonar {
-  properties {
-    property "sonar.projectKey", "clausant_feature-ms-claudiosantander-mensajed-multi-module-spring-boot-microservices"
-    property "sonar.organization", "clausant"
-    property "sonar.host.url", "https://sonarcloud.io"
-  }
+    properties {
+        property "sonar.projectKey", "clausant_feature-ms-claudiosantander-mensajed-multi-module-spring-boot-microservices"
+        property "sonar.organization", "clausant"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 repositories {
-	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
+    mavenCentral()
+    maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
-	set('springCloudVersion', "2020.0.0")
+    set('springCloudVersion', "2020.0.0")
 }
 
 allprojects {
-	group = 'com.toomuch2learn.microservices'
-	version = '0.0.1-SNAPSHOT'
-	sourceCompatibility = '11'
+    group = 'com.toomuch2learn.microservices'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '11'
 }
 
 subprojects {
 
-	apply plugin: 'org.springframework.boot'
-	apply plugin: 'io.spring.dependency-management'
-	apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
+    apply plugin: 'jacoco' // Agregamos el complemento JaCoCo aquí
 
-	repositories {
-		mavenCentral()
-	}
+    repositories {
+        mavenCentral()
+    }
 
-	test {
-		useJUnitPlatform()
-	}
+    test {
+        useJUnitPlatform()
+    }
 
-	dependencies {
-		implementation 'org.yaml:snakeyaml:1.27'
-		implementation 'org.springframework.boot:spring-boot-starter-web'
-		developmentOnly 'org.springframework.boot:spring-boot-devtools'
-		testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	}
+    jacoco { // Configuración de JaCoCo
+        toolVersion = "0.8.7" // Versión de JaCoCo (ajusta según tu preferencia)
+        reportsDir = file("$buildDir/reports/jacoco")
+    }
 
-	dependencyManagement {
-		imports {
-			mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-		}
-	}
+    tasks.withType(Test) {
+        finalizedBy jacocoTestReport
+    }
+
+    jacocoTestReport {
+        dependsOn test
+        reports {
+            xml.enabled true
+            csv.enabled false
+            html.destination file("$buildDir/reports/jacoco/html")
+        }
+
+        afterEvaluate {
+            classDirectories.setFrom(files(classDirectories.files.collect {
+                fileTree(dir: it,
+                        exclude: [
+                                '**/*Application.class', // Excluye las clases de aplicación Spring Boot
+                                '**/*Configuration.class', // Excluye las clases de configuración de Spring Boot
+                                '**/*Test.class' // Excluye las clases de prueba
+                        ])
+            }))
+        }
+    }
+
+    check.dependsOn jacocoTestCoverageVerification
+
+    jacocoTestCoverageVerification {
+        violationRules {
+            rule {
+                limit {
+                    minimum = 0.85 // Umbral del 85%
+                }
+            }
+        }
+    }
+
+    dependencies {
+        implementation 'org.yaml:snakeyaml:1.27'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
 }
 
 bootJar {
-	enabled = false
+    enabled = false
 }
 
-bootBuildImage{
-	enabled = false
+bootBuildImage {
+    enabled = false
 }
