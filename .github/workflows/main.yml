@@ -81,12 +81,14 @@ jobs:
          name: jmeter_test_results
          path: test_report
 
-      - name: Run Postman tests
-        run: |
-          newman run Postman.json --reporters json
+      - name: Postman
+        uses: matt-ball/newman-action@master # Cambiar a la etiqueta main
+        with:
+          collection: 'Postman.json'
+          reporters: '["json"]'
 
-      - name: Upload Postman Test Results
+      - name: Upload Newman Test Results
         uses: actions/upload-artifact@v2
         with:
-          name: postman-test-results
+          name: newman-test-results
           path: newman/
