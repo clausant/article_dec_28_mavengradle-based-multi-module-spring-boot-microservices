@@ -81,7 +81,7 @@ jobs:
          path: test_report
 
       - name: Postman
-        uses: matt-ball/newman-action@main # Usar la referencia "main"
+        uses: matt-ball/newman-action@v2 # Cambiar a la etiqueta v2
         with:
           collection: 'Postman.json'
           reporters: '["json"]'
