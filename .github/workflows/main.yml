@@ -81,7 +81,7 @@ jobs:
          path: test_report
 
       - name: Postman
-        uses: matt-ball/newman-action@v2 # Usar la última versión disponible
+        uses: matt-ball/newman-action@main # Usar la referencia "main"
         with:
           collection: 'Postman.json'
           reporters: '["json"]'
@@ -90,4 +90,3 @@ jobs:
         with:
           name: postman-test-results
           path: Newman/
-
