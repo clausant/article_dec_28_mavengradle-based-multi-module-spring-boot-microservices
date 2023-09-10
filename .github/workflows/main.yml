@@ -103,7 +103,6 @@ jobs:
       
       - name: Docker Build
         run: |
-          docker images | grep spring-multi-module
           docker tag c6b84b685f35f1a5d63661f5d4aa662ad9b7ee4f4b8c394c022f25023c907b65 clausant/springboot-servicea:latest
           docker tag c6b84b685f35f1a5d63661f5d4aa662ad9b7ee4f4b8c394c022f25023c907b65 clausant/springboot-serviceb:latest
           docker tag c6b84b685f35f1a5d63661f5d4aa662ad9b7ee4f4b8c394c022f25023c907b65 clausant/springboot-servicec:latest
