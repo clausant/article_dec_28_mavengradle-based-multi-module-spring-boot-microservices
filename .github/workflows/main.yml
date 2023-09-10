@@ -85,7 +85,7 @@ jobs:
       - name: Postman
         uses: matt-ball/newman-action@master
         with:
-          collection: postman_collection.json
+          collection: Copy.postman_collection.json
           reporters: '["json"]'
 
       #Artefacto de resultados Pruebas para Postman
