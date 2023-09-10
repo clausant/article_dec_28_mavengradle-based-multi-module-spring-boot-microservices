@@ -81,20 +81,20 @@ jobs:
          name: jmeter_test_results
          path: test_report
 
-      # Test con Postman
+      # Test with Postman (Commented out)
       #- name: Postman
-       # uses: matt-ball/newman-action@master
-       # with:
-        #  collection: Copy.postman_collection.json
-       #   reporters: '["json"]'
+      #  uses: matt-ball/newman-action@master
+      #  with:
+      #    collection: Copy.postman_collection.json
+      #    reporters: '["json"]'
 
-      #Artefacto de resultados Pruebas para Postman
+      # Artifact for Postman Test Results (Commented out)
       #- uses: actions/upload-artifact@v1
       #  with:
       #    name: postman-test-results
       #    path: newman/
      
-      #Login con credenciales Docker Hubs
+      # Docker Hub login with credentials
       - name: Docker Login
         uses: docker/login-action@v2.2.0
         with:
@@ -107,7 +107,7 @@ jobs:
           docker tag c6b84b685f35f1a5d63661f5d4aa662ad9b7ee4f4b8c394c022f25023c907b65 clausant/springboot-serviceb:latest
           docker tag c6b84b685f35f1a5d63661f5d4aa662ad9b7ee4f4b8c394c022f25023c907b65 clausant/springboot-servicec:latest
   
-      - name: Empujar imágenes etiquetadas a Docker Hub
+      - name: Push tagged images to Docker Hub
         run: |
           docker push clausant/springboot-servicea:latest
           docker push clausant/springboot-serviceb:latest
