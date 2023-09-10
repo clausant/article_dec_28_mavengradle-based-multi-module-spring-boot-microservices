@@ -81,7 +81,7 @@ jobs:
          path: test_report
 
       - name: Postman
-        uses: matt-ball/newman-action@v2 # Cambiar a la etiqueta v2
+        uses: matt-ball/newman-action@main # Cambiar a la etiqueta main
         with:
           collection: 'Postman.json'
           reporters: '["json"]'
@@ -90,3 +90,4 @@ jobs:
         with:
           name: postman-test-results
           path: Newman/
+
