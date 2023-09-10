@@ -19,6 +19,12 @@ jobs:
           java-version: 11
           distribution: 'adopt'
           
+      - name: Configurar JAVA_HOME
+        run: |
+          echo 'export JAVA_HOME=$JAVA_HOME' >> $GITHUB_ENV
+        env:
+          JAVA_HOME: ${{ github.workspace }}/<ruta-a-tu-jdk> # Reemplaza <ruta-a-tu-jdk> con la ruta real de tu JDK
+
       - name: Cache SonarCloud packages
         uses: actions/cache@v2
         with:
