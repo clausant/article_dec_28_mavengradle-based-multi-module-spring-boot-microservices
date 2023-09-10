@@ -94,7 +94,7 @@ jobs:
       #    name: postman-test-results
       #    path: newman/
      
-      # Docker Hub login with credentials
+      # Docker Hub login with credentials.
       - name: Docker Login
         uses: docker/login-action@v2.2.0
         with:
